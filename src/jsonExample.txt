@@ -1,0 +1,17 @@
+Example new order json 
+
+{
+  "header": {"version": 1, "type": 1, "seq": 12, "client_id": 7},
+  "body": {
+    "client_order_id": 999,
+    "symbol": "AAPL",
+    "side": "B",
+    "ord_type": "LMT",
+    "qty": 10,
+    "limit_price": 10123
+  }
+}
+
+
+
+
