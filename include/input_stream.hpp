@@ -5,13 +5,14 @@
 #include "order.hpp"
 #include "thread_safe_queue.hpp"
 #include "codec_json.hpp"
+#include "id_generator.hpp"
 
 namespace ex {
 
 class InputStream {
 public:
     // We now take two ports: one for incoming orders, one for outgoing status
-    explicit InputStream(ThreadSafeQueue<Order>* inbound_queue, const std::string& in_port, const std::string& out_port);
+    explicit InputStream(ThreadSafeQueue<Order>* inbound_queue, IdGenerator* inbound_id_generator, std::string& in_port, const std::string& out_port);
     
     ~InputStream();
 
@@ -30,6 +31,7 @@ private:
     zmq::socket_t out_socket;  // For sending receipts/errors
 
     ThreadSafeQueue<Order>* queue;
+    IdGenerator* id_generator;
     
     bool running;
 };
