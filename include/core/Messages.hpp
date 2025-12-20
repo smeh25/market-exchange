@@ -1,6 +1,6 @@
 #pragma once
-#include "core/Message.hpp"
-#include "core/Types.hpp"
+#include "core/message.hpp"
+#include "core/types.hpp"
 #include <string>
 #include <variant>
 

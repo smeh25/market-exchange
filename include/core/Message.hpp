@@ -1,5 +1,5 @@
 #pragma once
-#include "core/Types.hpp"
+#include "core/types.hpp"
 #include <string>
 
 namespace ex {
