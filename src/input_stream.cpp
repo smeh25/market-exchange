@@ -5,11 +5,12 @@
 namespace ex {
 
 // Constructor: Initializes ZMQ context and binds sockets
-InputStream::InputStream(ThreadSafeQueue<Order>* inbound_queue, const std::string& in_port, const std::string& out_port)
+InputStream::InputStream(ThreadSafeQueue<Order>* inbound_queue, IdGenerator* inbound_id_generator, std::string& in_port, const std::string& out_port)
     : context(1), 
       in_socket(context, zmq::socket_type::pull), 
       out_socket(context, zmq::socket_type::push),
       queue(inbound_queue),
+      id_generator(inbound_id_generator),
       running(false) 
 {
     try {
@@ -55,34 +56,59 @@ void InputStream::startListening() {
 
 Order InputStream::convertToOrder(const std::string& json_raw) {
     try {
-        auto j = json::parse(json_raw);
-        MessageHeader header = j.at("header").get<MessageHeader>();
 
-        if (header.type == MsgType::NEW_ORDER) {
-            auto req = j.at("body").get<NewOrderRequest>();
+        EnvelopeIn envelope = parse_inbound_envelope(json_raw);
 
-            Order o(header.seq, 0, req.symbol, req.side, header.type, req.limit_price, req.qty);
+        if (std::holds_alternative<NewOrderRequest>(envelope.body)) {
+            const auto& req = std::get<NewOrderRequest>(envelope.body);
 
-            Ack ack;
-            ack.client_order_id = req.client_order_id;
-            ack.order_id = header.seq; 
-            ack.symbol = req.symbol;
+            uint64_t internal_id = id_generator->getNextId();
+            uint64_t ts = 0; // placeholder for now
 
-            json response_json = ack;
-            sendResponse(response_json.dump());
+            Order o(
+                req.client_order_id, 
+                internal_id, 
+                ts, 
+                req.symbol, 
+                req.side, 
+                envelope.header.type, 
+                req.limit_price, 
+                req.qty
+            );
+
+            Ack ack_msg;
+            ack_msg.client_order_id = req.client_order_id;
+            ack_msg.order_id = internal_id;
+            ack_msg.symbol = req.symbol;
+
+            EnvelopeOut response;
+            response.header = envelope.header; // Copy incoming header metadata
+            response.header.type = MsgType::Ack; // Set type to Ack
+            response.body = ack_msg;
+
+            sendResponse(dump_envelope(response));
 
             return o;
+        } 
+        else if (std::holds_alternative<CancelRequest>(envelope.body)) {
+            // Future: Handle CancelRequest here
+            std::cout << "Received Cancel Request - Logic not yet implemented" << std::endl;
         }
+
     } catch (const std::exception& e) {
-        Reject rej;
-        rej.symbol = "UNKNOWN";
-        rej.info.reason = e.what();
-        
-        json reject_json = rej; 
-        sendResponse(reject_json.dump());
+        // 6. Send structured REJECT
+        Reject rej_msg;
+        rej_msg.symbol = "UNKNOWN";
+        rej_msg.info.reason = e.what();
+
+        EnvelopeOut response;
+        response.header.type = MsgType::Reject;
+        response.body = rej_msg;
+
+        sendResponse(dump_envelope(response));
     }
 
-    return Order(); 
+    return Order(); // Return empty order for non-new-order messages
 }
 
 void InputStream::sendResponse(const std::string& message) {
