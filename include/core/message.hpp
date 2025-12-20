@@ -1,14 +1,15 @@
 #pragma once
-#include "core/types.hpp"
+
+#include "types.hpp"
 #include <string>
 
 namespace ex {
 
 struct MessageHeader {
   uint16_t version = 1;
-  MsgType  type;
-  SeqNum   seq;         
-  ClientId client_id;
+  MsgType  type = MsgType::Heartbeat;
+  SeqNum   seq = 0;
+  ClientId client_id = 0;
 };
 
 struct RejectInfo {
@@ -16,4 +17,4 @@ struct RejectInfo {
   int code = 0;
 };
 
-} 
+} // namespace ex
