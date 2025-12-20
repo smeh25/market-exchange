@@ -1,28 +1,37 @@
 #pragma once
+
 #include "core/message.hpp"
 #include "core/types.hpp"
+
 #include <string>
 #include <variant>
 
 namespace ex {
 
+// ===================== INBOUND (client -> venue) =====================
+
 struct NewOrderRequest {
   uint64_t client_order_id = 0;
-
-  std::string symbol;   
-  Side side;
-  OrdType ord_type;
-
+  std::string symbol;
+  Side side = Side::Buy;
+  OrdType ord_type = OrdType::Limit;
   Qty qty = 0;
-  Price limit_price = 0;     
-  TimeInForce tif = TimeInForce::Day; // how long order should be in order book if not fulfilled
+
+  // For LMT only (ignored for MKT).
+  Price limit_price = 0;
+
+  // Optional (default Day)
+  TimeInForce tif = TimeInForce::Day;
 };
 
 struct CancelRequest {
-  OrderId order_id = 0;         
-  uint64_t client_order_id = 0; 
+  // allow cancel by venue order id OR by client_order_id
+  OrderId order_id = 0;
+  uint64_t client_order_id = 0;
   std::string symbol;
 };
+
+// ===================== OUTBOUND (venue -> client) =====================
 
 struct Ack {
   uint64_t client_order_id = 0;
@@ -36,16 +45,16 @@ struct Reject {
   RejectInfo info;
 };
 
-struct Fill { // partially filled order
+struct Fill {
   OrderId order_id = 0;
   std::string symbol;
-  Side side;
+  Side side = Side::Buy;
   Qty fill_qty = 0;
   Price fill_price = 0;
-  bool complete = false;  
+  bool complete = false;
 };
 
 using InboundMsg  = std::variant<NewOrderRequest, CancelRequest>;
 using OutboundMsg = std::variant<Ack, Reject, Fill>;
 
-} 
+} // namespace ex
