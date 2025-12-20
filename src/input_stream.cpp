@@ -5,7 +5,7 @@
 namespace ex {
 
 // Constructor: Initializes ZMQ context and binds sockets
-InputStream::InputStream(ThreadSafeQueue<Order>* inbound_queue, IdGenerator* inbound_id_generator, std::string& in_port, const std::string& out_port)
+InputStream::InputStream(ThreadSafeQueue<Order>* inbound_queue, IdGenerator* inbound_id_generator, const std::string& in_port, const std::string& out_port)
     : context(1), 
       in_socket(context, zmq::socket_type::pull), 
       out_socket(context, zmq::socket_type::push),
@@ -46,10 +46,27 @@ void InputStream::startListening() {
 
                 Order o = convertToOrder(msg_str);
 
-                if (o.qty > 0) {
+                if (o.quantity > 0) {
                     queue->push(std::move(o));
                 }
             }
+        }
+        catch (const zmq::error_t& e) {
+            // Check if error was just an interrupt (like Ctrl+C)
+            if (e.num() == ETERM) {
+                std::cout << "InputStream: ZMQ context terminated, shutting down..." << std::endl;
+                running = false;
+            } else {
+                std::cerr << "InputStream ZMQ Error: " << e.what() << std::endl;
+            }
+        }
+        catch (const std::exception& e) {
+            // This catches JSON errors or logic errors that leaked out of convertToOrder
+            std::cerr << "InputStream Logic Error: " << e.what() << std::endl;
+        }
+        catch (...) {
+            // Catch-all for anything else
+            std::cerr << "InputStream: Unknown critical error occurred!" << std::endl;
         }
     }
 }
@@ -62,7 +79,7 @@ Order InputStream::convertToOrder(const std::string& json_raw) {
         if (std::holds_alternative<NewOrderRequest>(envelope.body)) {
             const auto& req = std::get<NewOrderRequest>(envelope.body);
 
-            uint64_t internal_id = id_generator->getNextId();
+            uint64_t internal_id = id_generator->next();
             uint64_t ts = 0; // placeholder for now
 
             Order o(

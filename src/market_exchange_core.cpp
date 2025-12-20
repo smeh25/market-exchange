@@ -13,11 +13,11 @@ using namespace ex;
  */
 void printOrder(const Order& o) {
     std::cout << "[CORE] Received Order: "
-              << "ID: " << std::setw(4) << o.order_id << " | "
+              << "ID: " << std::setw(4) << o.internal_order_id << " | "
               << "Symbol: " << std::setw(5) << o.symbol << " | "
-              << "Side: " << (o.side == Side::BUY ? "BUY " : "SELL") << " | "
-              << "Qty: " << std::setw(5) << o.qty << " | "
-              << "Price: " << std::setw(8) << o.limit_price 
+              << "Side: " << (o.side == Side::Buy ? "BUY " : "SELL") << " | "
+              << "Qty: " << std::setw(5) << o.quantity << " | "
+              << "Price: " << std::setw(8) << o.price 
               << std::endl;
 }
 

@@ -12,7 +12,7 @@ namespace ex {
 class InputStream {
 public:
     // We now take two ports: one for incoming orders, one for outgoing status
-    explicit InputStream(ThreadSafeQueue<Order>* inbound_queue, IdGenerator* inbound_id_generator, std::string& in_port, const std::string& out_port);
+    explicit InputStream(ThreadSafeQueue<Order>* inbound_queue, IdGenerator* inbound_id_generator, const std::string& in_port, const std::string& out_port);
     
     ~InputStream();
 
