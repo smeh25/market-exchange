@@ -8,9 +8,9 @@
 #include <type_traits>
 #include <variant>
 
-#include "types.hpp"
-#include "message.hpp"
-#include "messages.hpp"
+#include "core/types.hpp"
+#include "core/message.hpp"
+#include "core/messages.hpp"
 
 namespace ex {
 
