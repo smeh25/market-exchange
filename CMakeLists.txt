@@ -15,5 +15,8 @@ file(GLOB SOURCES "src/*.cpp")
 add_executable(market_exchange ${SOURCES})
 
 # Link ZMQ (You will need this once you start the networking part)
-# find_package(ZeroMQ REQUIRED)
-# target_link_libraries(market_exchange PRIVATE libzmq)
+find_package(ZeroMQ REQUIRED)
+find_package(cppzmq REQUIRED)
+
+# Link them to your executable
+target_link_libraries(market_exchange PRIVATE cppzmq)
