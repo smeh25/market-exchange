@@ -1,3 +1,5 @@
+#pragma once
+
 #include <condition_variable>
 #include <iostream>
 #include <mutex>
@@ -23,7 +25,7 @@ class ThreadSafeQueue {
         T pop(){
             std::unique_lock<std::mutex> lock(mtx);
             
-            cv.wait(lock, [this]{ return !queue.empty(); });
+            c_var.wait(lock, [this]{ return !queue.empty(); });
 
             T item = queue.front();
             queue.pop();
