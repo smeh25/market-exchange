@@ -22,8 +22,10 @@ Then run the following to run it:
 
 After this is complete you should see a message outputted to the terminal that says
 
-> --- Initializing Market Exchange Core ---
-> InputStream initialized. In:5555 Out:5556
-> [CORE] Exchange is LIVE. Waiting for orders...
+<pre>
+--- Initializing Market Exchange Core ---
+InputStream initialized. In:5555 Out:5556
+[CORE] Exchange is LIVE. Waiting for orders...
+</pre>
 
 Following this navigate to a new terminal and run the python test scripts.
