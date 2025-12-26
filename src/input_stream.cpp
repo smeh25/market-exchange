@@ -1,6 +1,6 @@
 #include "input_stream.hpp"
 #include <iostream>
-#include "message.hpp"
+#include "core/message.hpp"
 
 namespace ex {
 
@@ -72,6 +72,7 @@ void InputStream::startListening() {
 }
 
 Order InputStream::convertToOrder(const std::string& json_raw) {
+    std::cout << "[DEBUG] Raw JSON received: " << json_raw << std::endl;
     try {
 
         EnvelopeIn envelope = parse_inbound_envelope(json_raw);
