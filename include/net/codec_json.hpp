@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nlohmann/json.hpp>
+#include "lib/nlohmann/json.hpp"
 
 #include <cstdint>
 #include <stdexcept>

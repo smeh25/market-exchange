@@ -4,7 +4,7 @@
 #include <zmq.hpp>
 #include "order.hpp"
 #include "thread_safe_queue.hpp"
-#include "codec_json.hpp"
+#include "net/codec_json.hpp"
 #include "id_generator.hpp"
 
 namespace ex {
