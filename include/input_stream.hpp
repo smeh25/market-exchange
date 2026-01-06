@@ -12,26 +12,20 @@ namespace ex {
 class InputStream {
 public:
     // We now take two ports: one for incoming orders, one for outgoing status
-    explicit InputStream(ThreadSafeQueue<Order>* inbound_queue, IdGenerator* inbound_id_generator, const std::string& in_port, const std::string& out_port);
+    explicit InputStream(ThreadSafeQueue<std::string>* raw_queue, const std::string& in_port);
     
     ~InputStream();
 
     void startListening();
+    void stop();
 
 private:
-    // This now handles the JSON logic
-    Order convertToOrder(const std::string& json_raw);
-    
-    // Helper to send "Success" or "Invalid JSON" back to the sender
-    void sendResponse(const std::string& message);
 
     // ZMQ Infrastructure
     zmq::context_t context;
     zmq::socket_t in_socket;   // For receiving JSON Orders
-    zmq::socket_t out_socket;  // For sending receipts/errors
 
-    ThreadSafeQueue<Order>* queue;
-    IdGenerator* id_generator;
+    ThreadSafeQueue<std::string>* raw_queue;
     
     bool running;
 };
