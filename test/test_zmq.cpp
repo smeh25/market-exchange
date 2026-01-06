@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
+#include <lib/nlohmann/json.hpp>
 #include <zmq.hpp>
-#include <nlohmann/json.hpp>
 
 // Using the same JSON library you're using for your codec
 using json = nlohmann::json;
