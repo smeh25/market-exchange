@@ -33,4 +33,9 @@ class ThreadSafeQueue {
             return item;
         }
 
+        size_t size() {
+            std::unique_lock<std::mutex> lock(mtx);
+            return queue.size();
+        }
+
 };
