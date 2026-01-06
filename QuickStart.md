@@ -23,8 +23,14 @@ After this is complete you should see a message outputted to the terminal that s
 
 <pre>
 --- Initializing Market Exchange Core ---
-InputStream initialized. In:5555 Out:5556
+InputStream initialized. In:5555
+InputStream: Start listening for orders...
+Output socket connected. Out:5556
+OrderGenerator thread running
+Output socket connected. Out:5556
 [CORE] Exchange is LIVE. Waiting for orders...
 </pre>
+
+Note if you update the number of threads for the order generators, the number of "Output socket connected" and "OrderGenerator thread running" messages will change accordingly. By default it is set to 8. 
 
 Following this navigate to a new terminal and run the python test scripts.
