@@ -1,0 +1,37 @@
+A price tick will look like this
+
+
+Continous tick that displays best bid and ask 
+
+{
+    "header": {
+        "type": 900,             // MsgType::MarketTick
+        "symbol": "AAPL",
+        "timestamp_ns": 1704562301000543,
+        "seq_num": 88022
+    },
+    "body": {
+        "bid_price": 15050,      // Current highest buy price
+        "bid_qty": 100,          // Total quantity at the best bid
+        "ask_price": 15060,      // Current lowest sell price
+        "ask_qty": 50,           // Total quantity at the best ask
+        "last_price": 5000,
+        "total_volume": 125400   // Cumulative daily volume
+    }
+}
+
+
+Price tick after an event has occured
+
+{
+    "header": {
+        "type": 901,      // Event tick after some trade has filled
+        "symbol": "AAPL",
+        "timestamp_ns": 1704562301000543,
+        "seq_num": 88022
+    },
+    "body": {
+        "traded_price": 5000,
+        "volume": 10
+    }
+}
