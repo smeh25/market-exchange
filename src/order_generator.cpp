@@ -18,9 +18,9 @@ OrderGenerator::OrderGenerator(ThreadSafeQueue<std::string>* raw_queue,
     // Connect to the internal "Out" port to send Acks
     try{
         out_socket.connect("tcp://localhost:" + out_port);
-        std::cout << "Output initialized. Out:" << out_port << std::endl;
+        std::cout << "Output socket connected. Out:" << out_port << std::endl;
     } catch (const zmq::error_t& e) {
-        std::cerr << "ZMQ Bind Error: " << e.what() << std::endl;
+        std::cerr << "ZMQ Connect Error: " << e.what() << std::endl;
     }
 }
 
@@ -35,6 +35,8 @@ void OrderGenerator::stop(){
 
 void OrderGenerator::run() {
     running = true;
+    std::cout << "OrderGenerator thread running" << std::endl;
+
     while (running) {
         try{
             // Pop blocks until a raw JSON string is available from the InputStream
