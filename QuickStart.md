@@ -4,8 +4,7 @@ Run this command from the root directory to build:
 
 ```bash
 g++ -g -std=c++17 -Wall \
-src/market_exchange_core.cpp \
-src/net/input_stream.cpp \
+src/*.cpp \
 -I./include \
 -I$(brew --prefix cppzmq)/include \
 -I$(brew --prefix zeromq)/include \
